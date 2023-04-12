@@ -14,34 +14,27 @@ dataSources:
           apiVersion: 0.0.7
           language: wasm/assemblyscript
           entities:
-              - Approval
-              - ApprovalForAll
-              - OwnershipTransferred
-              - Transfer
+              - Token
               - User
           abis:
               - name: BoredApesContract
                 file: ./abis/BoredApesContract.json
           eventHandlers:
-              - event: Approval(indexed address,indexed address,indexed uint256)
-                handler: handleApproval
-              - event: ApprovalForAll(indexed address,indexed address,bool)
-                handler: handleApprovalForAll
-              - event: OwnershipTransferred(indexed address,indexed address)
-                handler: handleOwnershipTransferred
               - event: Transfer(indexed address,indexed address,indexed uint256)
                 handler: handleTransfer
           file: ./src/bored-apes-contract.ts
 templates:
-    - name: TokenMetadata
+    - name: TokenMetadataTemplateInYaml
       kind: file/ipfs
       mapping:
           apiVersion: 0.0.7
           language: wasm/assemblyscript
           file: ./src/bored-apes-contract.ts
+          handler: handleTokenMetadata
           entities:
               - TokenMetadata
-              - TokenMetadataAttributes
           abis:
               - name: Token
                 file: ./abis/BoredApesContract.json
+features:
+    - fullTextSearch

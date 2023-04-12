@@ -2,12 +2,16 @@
 
 import { DataSourceTemplate, DataSourceContext } from "@graphprotocol/graph-ts";
 
-export class TokenMetadata extends DataSourceTemplate {
+export class TokenMetadataTemplateInYaml extends DataSourceTemplate {
   static create(cid: string): void {
-    DataSourceTemplate.create("TokenMetadata", [cid]);
+    DataSourceTemplate.create("TokenMetadataTemplateInYaml", [cid]);
   }
 
   static createWithContext(cid: string, context: DataSourceContext): void {
-    DataSourceTemplate.createWithContext("TokenMetadata", [cid], context);
+    DataSourceTemplate.createWithContext(
+      "TokenMetadataTemplateInYaml",
+      [cid],
+      context
+    );
   }
 }

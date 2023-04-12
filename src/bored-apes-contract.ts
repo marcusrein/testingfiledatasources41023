@@ -1,124 +1,91 @@
-import {
-	Approval as ApprovalEvent,
-	ApprovalForAll as ApprovalForAllEvent,
-	OwnershipTransferred as OwnershipTransferredEvent,
-	Transfer as TransferEvent,
-} from "../generated/BoredApesContract/BoredApesContract";
-import {
-	Approval,
-	ApprovalForAll,
-	OwnershipTransferred,
-	Transfer,
-	Token,
-	TokenMetadata,
-	TokenMetadataAttributes,
-	User,
-} from "../generated/schema";
+// This is the Event we are listening to
+import { Transfer as TransferEvent } from "../generated/BoredApesContract/BoredApesContract";
 
-import { json, Bytes, dataSource } from "@graphprotocol/graph-ts";
+// These are the helpers
+import { json, Bytes, dataSource, log } from "@graphprotocol/graph-ts";
 
-import { TokenMetadata as TokenMetadataTemplate } from "../generated/templates";
+// These are the ENTITY TYPES we defined in the schema
+import { Token, TokenMetadata } from "../generated/schema";
+
+// This is the template that is created every time a new token is discovered on chain
+import { TokenMetadataTemplateInYaml as TokenMetadataTemplate } from "../generated/templates";
 
 const ipfsHash = "QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq";
 
-export function handleApproval(event: ApprovalEvent): void {
-	let entity = new Approval(
-		event.transaction.hash.concatI32(event.logIndex.toI32())
-	);
-	entity.owner = event.params.owner;
-	entity.approved = event.params.approved;
-	entity.tokenId = event.params.tokenId;
-
-	entity.blockNumber = event.block.number;
-	entity.blockTimestamp = event.block.timestamp;
-	entity.transactionHash = event.transaction.hash;
-
-	entity.save();
-}
-
-export function handleApprovalForAll(event: ApprovalForAllEvent): void {
-	let entity = new ApprovalForAll(
-		event.transaction.hash.concatI32(event.logIndex.toI32())
-	);
-	entity.owner = event.params.owner;
-	entity.operator = event.params.operator;
-	entity.approved = event.params.approved;
-
-	entity.blockNumber = event.block.number;
-	entity.blockTimestamp = event.block.timestamp;
-	entity.transactionHash = event.transaction.hash;
-
-	entity.save();
-}
-
-export function handleOwnershipTransferred(
-	event: OwnershipTransferredEvent
-): void {
-	let entity = new OwnershipTransferred(
-		event.transaction.hash.concatI32(event.logIndex.toI32())
-	);
-	entity.previousOwner = event.params.previousOwner;
-	entity.newOwner = event.params.newOwner;
-
-	entity.blockNumber = event.block.number;
-	entity.blockTimestamp = event.block.timestamp;
-	entity.transactionHash = event.transaction.hash;
-
-	entity.save();
-}
-
 export function handleTransfer(event: TransferEvent): void {
 	let token = Token.load(event.params.tokenId.toString());
-	if (token == null) {
+
+	if (!token) {
 		token = new Token(event.params.tokenId.toString());
 		token.tokenID = event.params.tokenId;
 
-		const tokenIpfsHash =
-			ipfsHash + "/" + event.params.tokenId.toString() + ".json";
+		token.tokenURI = "/" + event.params.tokenId.toString() + ".json";
+		const tokenIpfsHash = ipfsHash + token.tokenURI;
 		token.ipfsURI = tokenIpfsHash;
 
 		TokenMetadataTemplate.create(tokenIpfsHash);
-
-		token.save();
 	}
+	token.owner = event.params.to;
 	token.updatedAtTimestamp = event.block.timestamp;
 	token.save();
-
-	let user = User.load(event.params.to.toHex());
-	if (user == null) {
-		user = new User(event.params.to.toHex());
-		user.address = event.params.to;
-		user.save();
-	}
-	user.address = event.params.to;
-	user.save();
 }
 
 export function handleTokenMetadata(content: Bytes): void {
+	if (content) {
+		log.info("content: {}", [content.toString()]);
+	} else {
+		log.info("content: {}", ["null"]);
+	}
 	let tokenMetadata = new TokenMetadata(dataSource.stringParam());
-
 	const value = json.fromBytes(content).toObject();
 
 	if (value) {
 		const image = value.get("image");
-		const attributes = value.get("attributes");
-
-		if (image && attributes) {
-			tokenMetadata.image = image.toString();
+		const attributesValue = value.get("attributes");
+		if (image) {
+			log.info("image: {}", [image.toString()]);
+		} else {
+			log.info("image: {}", ["null"]);
 		}
-		const attribute0 = value.get("0");
-		if (attribute0) {
-			const attribute0Object = attribute0.toObject();
-			const trait_type0 = attribute0Object.get("trait_type");
-			const value0 = attribute0Object.get("value");
+		if (attributesValue) {
+			log.info("attributes: {}", [attributesValue.toString()]);
+		} else {
+			log.info("attributes: {}", ["null"]);
+		}
 
-			if (attribute0Object && trait_type0 && value0) {
-				const tokenMetadataAttributes = new TokenMetadataAttributes(
-					dataSource.stringParam()
-				);
-				tokenMetadataAttributes.trait_type0 = trait_type0.toString();
-				tokenMetadataAttributes.value0 = value0.toString();
+		if (image && attributesValue) {
+			tokenMetadata.image = image.toString();
+			log.info("image: {}", [tokenMetadata.image]);
+			log.info("attributes: {}", [attributesValue.toString()]);
+
+			const attributes = attributesValue.toArray();
+			if (attributes.length > 0) {
+				const attribute = attributes[0].toObject();
+
+				// Access first attribute's properties using attribute.get('property_name')
+				const trait_type0 = attribute.get("trait_type");
+				const value0 = attribute.get("value");
+
+				if (trait_type0) {
+					log.info("trait_type0: {}", [trait_type0.toString()]);
+				} else {
+					log.info("trait_type0: {}", ["null"]);
+				}
+				if (value0) {
+					log.info("value0: {}", [value0.toString()]);
+				} else {
+					log.info("value0: {}", ["null"]);
+				}
+
+				// Add null checks before assigning values
+				if (trait_type0) {
+					tokenMetadata.trait_type0 = trait_type0.toString();
+				}
+				if (value0) {
+					tokenMetadata.value0 = value0.toString();
+				}
 			}
 		}
+		tokenMetadata.save();
 	}
 }
