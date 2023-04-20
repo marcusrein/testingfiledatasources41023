@@ -1,33 +1,33 @@
 type _Schema_
-	@fulltext(
-		name: "apeSearch"
-		language: en
-		algorithm: rank
-		include: [
-			{
-				entity: "TokenMetadata"
-				fields: [
-					{ name: "image" }
-					{ name: "attributes" }
-					{ name: "trait_type0" }
-					{ name: "value0" }
-				]
-			}
-		]
-	)
+  @fulltext(
+    name: "apeSearch"
+    language: en
+    algorithm: rank
+    include: [
+      {
+        entity: "TokenMetadata"
+        fields: [
+          { name: "image" }
+          { name: "attributes" }
+          { name: "trait_type0" }
+          { name: "value0" }
+        ]
+      }
+    ]
+  )
 type Token @entity {
-	id: ID!
-	tokenID: BigInt!
-	tokenURI: String!
-	ipfsURI: TokenMetadata
-	updatedAtTimestamp: BigInt
-	owner: Bytes!
+  id: ID!
+  tokenID: BigInt!
+  tokenURI: String!
+  ipfsURI: TokenMetadata
+  updatedAtTimestamp: BigInt
+  owner: Bytes!
 }
 
 type TokenMetadata @entity {
-	id: ID!
-	image: String!
-	trait_type0: String!
-	value0: String!
-	attributes: String
+  id: ID!
+  image: String!
+  trait_type0: String
+  value0: String
+  attributes: String
 }
