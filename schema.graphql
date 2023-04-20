@@ -1,33 +1,60 @@
 type _Schema_
-	@fulltext(
-		name: "apeSearch"
-		language: en
-		algorithm: rank
-		include: [
-			{
-				entity: "TokenMetadata"
-				fields: [
-					{ name: "image" }
-					{ name: "attributes" }
-					{ name: "trait_type0" }
-					{ name: "value0" }
-				]
-			}
-		]
-	)
+  @fulltext(
+    name: "apeSearch"
+    language: en
+    algorithm: rank
+    include: [
+      {
+        entity: "TokenMetadata"
+        fields: [
+          { name: "image" }
+          { name: "trait_hat" }
+          { name: "trait_fur" }
+          { name: "trait_background" }
+          { name: "trait_eyes" }
+          { name: "trait_clothes" }
+          { name: "trait_mouth" }
+        ]
+      }
+    ]
+  )
+
+enum TraitType {
+  Hat
+  Fur
+  Background
+  Eyes
+  Clothes
+  Mouth
+}
+
 type Token @entity {
-	id: ID!
-	tokenID: BigInt!
-	tokenURI: String!
-	ipfsURI: TokenMetadata
-	updatedAtTimestamp: BigInt
-	owner: Bytes!
+  id: ID!
+  tokenID: BigInt!
+  tokenURI: String!
+  ipfsURI: TokenMetadata
+  updatedAtTimestamp: BigInt
+  owner: Bytes!
 }
 
 type TokenMetadata @entity {
-	id: ID!
-	image: String!
-	trait_type0: String!
-	value0: String!
-	attributes: String
+  id: ID!
+  image: String!
+  # trait_type0: String
+  # value0: String
+  # attributes: String
+  trait_hat: String
+  trait_fur: String
+  trait_background: String
+  trait_eyes: String
+  trait_clothes: String
+  trait_mouth: String
+  traits: [Trait!]!
+}
+
+type Trait @entity {
+  id: ID!
+  trait_type: TraitType!
+  metaDatas: [TokenMetadata!]! @derivedFrom(field: "traits")
+  numberOfNfts: BigInt!
 }

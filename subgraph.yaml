@@ -1,40 +1,41 @@
 specVersion: 0.0.5
 schema:
-    file: ./schema.graphql
+  file: ./schema.graphql
 dataSources:
-    - kind: ethereum
-      name: BoredApesContract
-      network: mainnet
-      source:
-          address: "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D"
-          abi: BoredApesContract
-          startBlock: 12287507
-      mapping:
-          kind: ethereum/events
-          apiVersion: 0.0.7
-          language: wasm/assemblyscript
-          entities:
-              - Token
-              - User
-          abis:
-              - name: BoredApesContract
-                file: ./abis/BoredApesContract.json
-          eventHandlers:
-              - event: Transfer(indexed address,indexed address,indexed uint256)
-                handler: handleTransfer
-          file: ./src/bored-apes-contract.ts
+  - kind: ethereum
+    name: BoredApesContract
+    network: mainnet
+    source:
+      address: "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D"
+      abi: BoredApesContract
+      startBlock: 12287507
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Token
+        - User
+      abis:
+        - name: BoredApesContract
+          file: ./abis/BoredApesContract.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/bored-apes-contract.ts
 templates:
-    - name: TokenMetadataTemplateInYaml
-      kind: file/ipfs
-      mapping:
-          apiVersion: 0.0.7
-          language: wasm/assemblyscript
-          file: ./src/bored-apes-contract.ts
-          handler: handleTokenMetadata
-          entities:
-              - TokenMetadata
-          abis:
-              - name: Token
-                file: ./abis/BoredApesContract.json
+  - name: TokenMetadataTemplateInYaml
+    kind: file/ipfs
+    mapping:
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/bored-apes-contract.ts
+      handler: handleTokenMetadata
+      entities:
+        - TokenMetadata
+        - Trait
+      abis:
+        - name: Token
+          file: ./abis/BoredApesContract.json
 features:
-    - fullTextSearch
+  - fullTextSearch
