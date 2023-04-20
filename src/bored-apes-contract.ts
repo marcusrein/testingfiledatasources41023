@@ -2,15 +2,29 @@
 import { Transfer as TransferEvent } from "../generated/BoredApesContract/BoredApesContract";
 
 // These are the helpers
-import { json, Bytes, dataSource, log } from "@graphprotocol/graph-ts";
+import { json, Bytes, dataSource, log, BigInt } from "@graphprotocol/graph-ts";
 
 // These are the ENTITY TYPES we defined in the schema
-import { Token, TokenMetadata } from "../generated/schema";
+import { Token, TokenMetadata, Trait } from "../generated/schema";
 
 // This is the template that is created every time a new token is discovered on chain
 import { TokenMetadataTemplateInYaml as TokenMetadataTemplate } from "../generated/templates";
 
 const ipfsHash = "QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq";
+
+// getOrCreatTrait
+function getOrCreateTrait(id: string, type: string): Trait {
+  let trait = Trait.load(id);
+
+  if (trait == null) {
+    trait = new Trait(id);
+    trait.trait_type = type;
+    trait.numberOfNfts = BigInt.fromI32(0);
+    trait.save();
+  }
+
+  return trait as Trait;
+}
 
 export function handleTransfer(event: TransferEvent): void {
   let token = Token.load(event.params.tokenId.toString());
@@ -58,6 +72,7 @@ export function handleTokenMetadata(content: Bytes): void {
         const trait = traits[i].toObject();
         const trait_type = trait.get("trait_type");
         const value = trait.get("value");
+        let traitsField = new Array<string>();
 
         if (trait_type && value) {
           log.info("trait_type: {}", [trait_type.toString()]);
@@ -65,6 +80,14 @@ export function handleTokenMetadata(content: Bytes): void {
 
           if (trait_type.toString() == "Hat") {
             tokenMetadata.trait_hat = value.toString();
+
+            let trait_hat = getOrCreateTrait(value.toString(), "Hat");
+            trait_hat.numberOfNfts = trait_hat.numberOfNfts.plus(
+              BigInt.fromI32(1)
+            );
+            trait_hat.save();
+
+            traitsField.push(trait_hat.id);
           } else if (trait_type.toString() == "Fur") {
             tokenMetadata.trait_fur = value.toString();
           } else if (trait_type.toString() == "Background") {
@@ -76,6 +99,8 @@ export function handleTokenMetadata(content: Bytes): void {
           } else if (trait_type.toString() == "Mouth") {
             tokenMetadata.trait_mouth = value.toString();
           }
+
+          tokenMetadata.traits = traitsField;
         }
       }
     }

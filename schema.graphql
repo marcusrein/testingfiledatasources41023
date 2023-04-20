@@ -18,6 +18,16 @@ type _Schema_
       }
     ]
   )
+
+enum TraitType {
+  Hat
+  Fur
+  Background
+  Eyes
+  Clothes
+  Mouth
+}
+
 type Token @entity {
   id: ID!
   tokenID: BigInt!
@@ -39,13 +49,12 @@ type TokenMetadata @entity {
   trait_eyes: String
   trait_clothes: String
   trait_mouth: String
-  # traits: [String!]!
+  traits: [Trait!]!
 }
 
-# type Trait @entity {
-#   id: ID!
-#   trait_type: String!
-#   value: String!
-#   token: Token!
-#   tokensWithThatTrait: BigInt!
-# }
+type Trait @entity {
+  id: ID!
+  trait_type: TraitType!
+  metaDatas: [TokenMetadata!]! @derivedFrom(field: "traits")
+  numberOfNfts: BigInt!
+}

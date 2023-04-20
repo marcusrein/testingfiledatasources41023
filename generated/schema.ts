@@ -245,4 +245,68 @@ export class TokenMetadata extends Entity {
       this.set("trait_mouth", Value.fromString(<string>value));
     }
   }
+
+  get traits(): Array<string> {
+    let value = this.get("traits");
+    return value!.toStringArray();
+  }
+
+  set traits(value: Array<string>) {
+    this.set("traits", Value.fromStringArray(value));
+  }
+}
+
+export class Trait extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Trait entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Trait must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Trait", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Trait | null {
+    return changetype<Trait | null>(store.get("Trait", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get trait_type(): string {
+    let value = this.get("trait_type");
+    return value!.toString();
+  }
+
+  set trait_type(value: string) {
+    this.set("trait_type", Value.fromString(value));
+  }
+
+  get metaDatas(): Array<string> {
+    let value = this.get("metaDatas");
+    return value!.toStringArray();
+  }
+
+  get numberOfNfts(): BigInt {
+    let value = this.get("numberOfNfts");
+    return value!.toBigInt();
+  }
+
+  set numberOfNfts(value: BigInt) {
+    this.set("numberOfNfts", Value.fromBigInt(value));
+  }
 }
