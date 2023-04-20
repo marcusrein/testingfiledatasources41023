@@ -8,9 +8,12 @@ type _Schema_
         entity: "TokenMetadata"
         fields: [
           { name: "image" }
-          { name: "attributes" }
-          { name: "trait_type0" }
-          { name: "value0" }
+          { name: "trait_hat" }
+          { name: "trait_fur" }
+          { name: "trait_background" }
+          { name: "trait_eyes" }
+          { name: "trait_clothes" }
+          { name: "trait_mouth" }
         ]
       }
     ]
@@ -27,7 +30,22 @@ type Token @entity {
 type TokenMetadata @entity {
   id: ID!
   image: String!
-  trait_type0: String
-  value0: String
-  attributes: String
+  # trait_type0: String
+  # value0: String
+  # attributes: String
+  trait_hat: String
+  trait_fur: String
+  trait_background: String
+  trait_eyes: String
+  trait_clothes: String
+  trait_mouth: String
+  # traits: [String!]!
 }
+
+# type Trait @entity {
+#   id: ID!
+#   trait_type: String!
+#   value: String!
+#   token: Token!
+#   tokensWithThatTrait: BigInt!
+# }

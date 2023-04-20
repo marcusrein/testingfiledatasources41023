@@ -144,26 +144,8 @@ export class TokenMetadata extends Entity {
     this.set("image", Value.fromString(value));
   }
 
-  get trait_type0(): string {
-    let value = this.get("trait_type0");
-    return value!.toString();
-  }
-
-  set trait_type0(value: string) {
-    this.set("trait_type0", Value.fromString(value));
-  }
-
-  get value0(): string {
-    let value = this.get("value0");
-    return value!.toString();
-  }
-
-  set value0(value: string) {
-    this.set("value0", Value.fromString(value));
-  }
-
-  get attributes(): string | null {
-    let value = this.get("attributes");
+  get trait_hat(): string | null {
+    let value = this.get("trait_hat");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -171,11 +153,96 @@ export class TokenMetadata extends Entity {
     }
   }
 
-  set attributes(value: string | null) {
+  set trait_hat(value: string | null) {
     if (!value) {
-      this.unset("attributes");
+      this.unset("trait_hat");
     } else {
-      this.set("attributes", Value.fromString(<string>value));
+      this.set("trait_hat", Value.fromString(<string>value));
+    }
+  }
+
+  get trait_fur(): string | null {
+    let value = this.get("trait_fur");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set trait_fur(value: string | null) {
+    if (!value) {
+      this.unset("trait_fur");
+    } else {
+      this.set("trait_fur", Value.fromString(<string>value));
+    }
+  }
+
+  get trait_background(): string | null {
+    let value = this.get("trait_background");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set trait_background(value: string | null) {
+    if (!value) {
+      this.unset("trait_background");
+    } else {
+      this.set("trait_background", Value.fromString(<string>value));
+    }
+  }
+
+  get trait_eyes(): string | null {
+    let value = this.get("trait_eyes");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set trait_eyes(value: string | null) {
+    if (!value) {
+      this.unset("trait_eyes");
+    } else {
+      this.set("trait_eyes", Value.fromString(<string>value));
+    }
+  }
+
+  get trait_clothes(): string | null {
+    let value = this.get("trait_clothes");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set trait_clothes(value: string | null) {
+    if (!value) {
+      this.unset("trait_clothes");
+    } else {
+      this.set("trait_clothes", Value.fromString(<string>value));
+    }
+  }
+
+  get trait_mouth(): string | null {
+    let value = this.get("trait_mouth");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set trait_mouth(value: string | null) {
+    if (!value) {
+      this.unset("trait_mouth");
+    } else {
+      this.set("trait_mouth", Value.fromString(<string>value));
     }
   }
 }

@@ -47,44 +47,37 @@ export function handleTokenMetadata(content: Bytes): void {
     } else {
       log.info("image: {}", ["null"]);
     }
-    // if (attributesValue) {
-    //   log.info("attributes: {}", [attributesValue.toString()]);
-    // } else {
-    //   log.info("attributes: {}", ["null"]);
-    // }
 
     if (image && attributesValue) {
       tokenMetadata.image = image.toString();
       log.info("image: {}", [tokenMetadata.image]);
-      //   log.info("attributes: {}", [attributesValue.toString()]);
 
-      //   const attributes = attributesValue.toArray();
-      //   if (attributes.length > 0) {
-      //     const attribute = attributes[0].toObject();
+      const traits = attributesValue.toArray();
 
-      //     // Access first attribute's properties using attribute.get('property_name')
-      //     const trait_type0 = attribute.get("trait_type");
-      //     const value0 = attribute.get("value");
+      for (let i = 0; i < traits.length; i++) {
+        const trait = traits[i].toObject();
+        const trait_type = trait.get("trait_type");
+        const value = trait.get("value");
 
-      //     if (trait_type0) {
-      //       log.info("trait_type0: {}", [trait_type0.toString()]);
-      //     } else {
-      //       log.info("trait_type0: {}", ["null"]);
-      //     }
-      //     if (value0) {
-      //       log.info("value0: {}", [value0.toString()]);
-      //     } else {
-      //       log.info("value0: {}", ["null"]);
-      //     }
+        if (trait_type && value) {
+          log.info("trait_type: {}", [trait_type.toString()]);
+          log.info("value: {}", [value.toString()]);
 
-      //     // Add null checks before assigning values
-      //     if (trait_type0) {
-      //       tokenMetadata.trait_type0 = trait_type0.toString();
-      //     }
-      //     if (value0) {
-      //       tokenMetadata.value0 = value0.toString();
-      //     }
-      //   }
+          if (trait_type.toString() == "Hat") {
+            tokenMetadata.trait_hat = value.toString();
+          } else if (trait_type.toString() == "Fur") {
+            tokenMetadata.trait_fur = value.toString();
+          } else if (trait_type.toString() == "Background") {
+            tokenMetadata.trait_background = value.toString();
+          } else if (trait_type.toString() == "Eyes") {
+            tokenMetadata.trait_eyes = value.toString();
+          } else if (trait_type.toString() == "Clothes") {
+            tokenMetadata.trait_clothes = value.toString();
+          } else if (trait_type.toString() == "Mouth") {
+            tokenMetadata.trait_mouth = value.toString();
+          }
+        }
+      }
     }
     tokenMetadata.save();
   }
